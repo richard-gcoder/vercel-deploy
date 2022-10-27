@@ -30,8 +30,8 @@ export const DiscordAuthHandler = () => {
         avatar: Avatar,
         token: Token,
       }))
+      toast.success('登录成功')
       setTimeout(() => {
-        toast.success('登录成功')
         navigate(ADMIN_DATA_PANEL_PATH)
       }, 500)
     }
