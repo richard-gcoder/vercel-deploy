@@ -15,8 +15,8 @@ interface AdminUserInfo {
 
 interface DiscordUserInfo {
   discord: string
+  nickname: string
   avatar: string
-  email?: string
   token: string
 }
 
@@ -50,6 +50,9 @@ export const loginUserInfoSlice = createSlice({
         lastLoginUserType: LoginUserType.ADMIN,
       }
     },
+    setDiscordUserLogout: (states) => {
+      return { ...states, discordUserInfo: undefined }
+    },
     setAdminLogout: (states) => {
       return { ...states, loginUserType: undefined, adminUserInfo: undefined }
     }
@@ -61,6 +64,7 @@ export const {
   setLoginUserType,
   setAdminLogin,
   setAdminLogout,
+  setDiscordUserLogout,
 } = loginUserInfoSlice.actions
 
 export const selectDiscordUserInfo = (state: RootState) => state.LOGIN_USER_INFO_SLICE.discordUserInfo

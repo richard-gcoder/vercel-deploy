@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux'
-import { LoginUserType, selectLoginUserType, selectAdminUserinfo, setAdminLogout, selectDiscordUserInfo } from '../../../store/loginUserInfoSlice'
+import { LoginUserType, selectLoginUserType, selectAdminUserinfo, setAdminLogout, selectDiscordUserInfo, setDiscordUserLogout } from '../../../store/loginUserInfoSlice'
 
 // Mui
 import { 
@@ -30,7 +30,7 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 
 // Material Icons
 // import SupervisorIcon from '@mui/icons-material/SupervisorAccountTwoTone';
-import { Logout, MoreVertSharp } from '@mui/icons-material';
+import { Logout, MoreVertSharp,  } from '@mui/icons-material';
 
 // API
 import { queryFarms, logout, queryAdmins, queryPersonalInvestment, queryFarmMemberAccountInfo } from '../../../api'
@@ -77,7 +77,7 @@ export const AdminDataPanel = () => {
 
   // const loginUserType = useSelector(selectLoginUserType)
   // const adminUserInfo = useSelector(selectAdminUserinfo)
-  // const discordUserInfo = useSelector(selectDiscordUserInfo)
+  const discordUserInfo = useSelector(selectDiscordUserInfo)
 
   // const displayUsername = loginUserType === LoginUserType.ADMIN ? adminUserInfo?.username : loginUserType === LoginUserType.DISCORD_USER ? discordUserInfo?.discord : ''
 
@@ -158,7 +158,11 @@ export const AdminDataPanel = () => {
     //   toast.success("已登出")
     //   dispatch(setAdminLogout())
     // }
-    navigate('/login')
+    toast.success("已登出")
+    setTimeout(() => {
+      dispatch(setDiscordUserLogout())
+    }, 1000)
+    // navigate('/login')
   }
 
   // const handleFetchAllFarms = async() => {
@@ -169,7 +173,7 @@ export const AdminDataPanel = () => {
 
   const pressTestButton = async() => {
     // queryFarms().then(res => console.log(res))
-    queryFarmMemberAccountInfo().then(res => console.log(res))
+    // queryFarmMemberAccountInfo().then(res => console.log(res))
     // queryPersonalInfoInvestment().then((res) => console.log(res))
   }
 
@@ -204,11 +208,9 @@ export const AdminDataPanel = () => {
       >
         <Button variant="text" color='inherit' size='large' sx={{ textTransform: 'none' }} >
           <Box sx={{ display: 'flex', alignItems: 'center', justifySelf: 'left' }}>
-            <Avatar sx={{ width: 46, height: 46 }} src="https://cdn.discordapp.com/avatars/715317504573964339/350528c252a927e7103fdaedd19c3abc">
-              {/* <Person /> */}
-            </Avatar>
+            <Avatar sx={{ width: 46, height: 46 }} src={discordUserInfo?.avatar} />
             <Typography variant='h4' sx={{ marginLeft: '14px' }} >
-              {'管理员用户名'}
+              {discordUserInfo?.discord}
             </Typography>
             {/* <IconButton
               aria-label="more"
@@ -236,7 +238,8 @@ export const AdminDataPanel = () => {
             {Object.values(NavMenuOptions).map((option) => (
               <>
                 <ListItemButton
-                  sx={{ margin: '4px 0px' }}
+                  key={option.label}
+                  sx={{ margin: '6px 0px' }}
                   onClick={() => handlePrimaryMenuItemClick(option.label)}
                 >
                   <Typography variant='h6' >{option.label}</Typography>
@@ -245,7 +248,7 @@ export const AdminDataPanel = () => {
                   option.subMenuOptions.map((name) => (
                     <Collapse in={option.label === selectedMenuName.primary}>
                       <List disablePadding>
-                        <ListItemButton 
+                        <ListItemButton
                           sx={{ 
                             pl: 5, 
                             backgroundColor: selectedMenuName.secondary === name ? '#F5F5F5' : 'unset' 
@@ -303,16 +306,16 @@ export const AdminDataPanel = () => {
               }}
             /> */}
 
-            <Button variant='contained' onClick={() => {handleAdminLogout()}} >
+            <Button variant='contained' onClick={() => {}}>
               查询
             </Button>
 
-            <Button variant='contained' sx={{ marginLeft: '12px' }} onClick={pressTestButton} >
+            {/* <Button variant='contained' sx={{ marginLeft: '12px' }} onClick={pressTestButton} >
               Test
-            </Button>
+            </Button> */}
           </Box>
 
-          <Box sx={{ height: '100%' }}>
+          <Box sx={{ }}>
             <DataGrid
               // loading={isLoading}
               columns={columns}
@@ -353,7 +356,7 @@ export const AdminDataPanel = () => {
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right',
+          horizontal: 'center',
         }}
       >
         <MenuItem onClick={handleAdminLogout}>

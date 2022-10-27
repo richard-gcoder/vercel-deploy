@@ -3,55 +3,41 @@ import { toast } from 'react-toastify';
 
 // Redux
 import { useDispatch, useSelector } from 'react-redux'
-import { setAdminLogin, selectAdminUserinfo } from '../../store/loginUserInfoSlice'
+import { setDiscordUserInfo } from '../../store/loginUserInfoSlice'
+
+// Router
+import { useNavigate, useLocation } from 'react-router-dom' 
+import { ADMIN_DATA_PANEL_PATH } from '../DataPanel/Admin'
 
 export const DiscordAuthHandler = () => {
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   useEffect(() => {
-
     const urlSearchParams = new URLSearchParams(window.location.search);
-    const res = JSON.parse(`${urlSearchParams.get('result')}`)
-    console.log(typeof res)
-    console.log(res)
-    const accessToken = res?.data
+    const res = JSON.parse(`${urlSearchParams.get('data')}`)
+    const { userInfo, pageInfo } = res?.data
 
-    if (!accessToken) {
+    const { Avatar, Discord, IsCompleteInfo, Nickname, Token } = userInfo
+
+    if (!Token) {
       toast.warning("发生了未知错误，请关闭此窗口并重试Discord登录")
-      return
+    } else {
+      dispatch(setDiscordUserInfo({ 
+        discord: Discord,
+        nickname: Nickname,
+        avatar: Avatar,
+        token: Token,
+      }))
+      setTimeout(() => {
+        toast.success('登录成功')
+        navigate(ADMIN_DATA_PANEL_PATH)
+      }, 500)
     }
-
-    // Get user's avatar and name using token
-    // fetch('https://discord.com/api/users/@me', {
-    //   headers: {
-    //     authorization: `Bearer ${accessToken}`,
-    //   },
-    // }).then(result => result.json())
-    //   .then(response => {
-    //     const { username, discriminator } = response
-    //     console.log({ username, discriminator })
-    //   })
- 
-    // fetch('https://discord.com/api/users/@me', {
-    //   headers: {
-    //     authorization: `${tokenType} ${accessToken}`,
-    //   },
-    // })
-    //   .then(result => result.json())
-    //   .then(response => {
-    //     const { username, discriminator } = response;
-    //     setState((prevState) => ({
-    //       ...prevState,
-    //       username: `${username}` || "",
-    //       discriminator: `${discriminator}` || "",
-    //     }))
-    //     alert(`username: ${username}, discriminator: ${discriminator}`)
-    //   })
-    //   .catch(console.error);
   }, [])
 
   return (<></>)
 }
 
-export const DISCORD_AUTH_HANDLER_PATH = '/data'
+export const DISCORD_AUTH_HANDLER_PATH = '/auth/discord'

@@ -1,12 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import axios from 'axios'
+
+// Redux
+import { useDispatch, useSelector } from 'react-redux'
+import { selectDiscordUserInfo } from '../../store/loginUserInfoSlice'
 
 // MUI
 import { Box, Button, SvgIcon, Typography } from '@mui/material'
 import { SupervisorAccount } from '@mui/icons-material'
 
 // Components
-import {ReactComponent as DiscordLogo} from './discord_logo.svg'
+import { toast } from 'react-toastify';
+import { ReactComponent as DiscordLogo } from './discord_logo.svg'
 
 // API
 import { REQUEST_URL_BASE, DISCORD_AUTH_URL } from '../../api'
@@ -14,42 +19,55 @@ import { REQUEST_URL_BASE, DISCORD_AUTH_URL } from '../../api'
 // Router
 import { useNavigate, useLocation } from 'react-router-dom' 
 import { USERNAME_LOGIN_PATH } from './UsernameLogin'
-
+import { ADMIN_DATA_PANEL_PATH } from '../DataPanel/Admin'
 
 export const LoginMainPage = () => {
 
   const location = useLocation()
   const navigate = useNavigate()
+  
+  const discordUserInfo = useSelector(selectDiscordUserInfo)
 
   /** Discord auth states & managers */
-  const [awaitDiscordAuth, setAwaitDiscordAuth] = useState<boolean>(false)
-  const [dotCount, setDotCount] = useState<number>(0)
+  const [authWindowIsOpen, setAuthWindowIsOpen] = useState<boolean>(false)
 
-  const timer = useRef<NodeJS.Timer | null>(null)
-  const popup = useRef<Window | null>(null)
-
-  useEffect(() => {
-    if (awaitDiscordAuth) {
-      // window.addEventListener('message', (event) => console.log(event.data))
-      popup.current = window.open(DISCORD_AUTH_URL, '_blank', 'popup')
-      popup.current?.addEventListener('popstate', (event) => {
-      popup.current?.alert('!!!!')
-      popup.current?.postMessage(event, "*")
-    })
-      // popup.current?.onpopstate = () => {}
-      timer.current = setInterval(() => {
-        popup.current?.closed ? setAwaitDiscordAuth(false) : setDotCount(count => count < 4 ? count + 1 : 1);
-      }, 1000)
+  const handleDiscordLogin = useCallback(() => {
+    if (discordUserInfo?.token) {
+      toast.success('已登录')
+      navigate(ADMIN_DATA_PANEL_PATH)
     } else {
-      setDotCount(0)
-      timer.current && clearInterval(timer.current)
+      window.open(DISCORD_AUTH_URL, "_self")
     }
-    return () => {
-      // Clean up on component dismount (route change)
-      popup.current && popup.current.close()
-      timer.current && clearInterval(timer.current)
-    }
-  }, [awaitDiscordAuth])
+  }, [discordUserInfo?.token])
+
+  // const timer = useRef<NodeJS.Timer | null>(null)
+  // const popup = useRef<Window | null>(null)
+
+  // useEffect(() => {
+  //   if (authWindowIsOpen) {
+  //     popup.current = window.open(DISCORD_AUTH_URL, '_blank', 'popup')
+  //     timer.current = setInterval(() => {
+  //       popup.current?.closed && setAuthWindowIsOpen(false)
+  //     }, 500)
+  //   } else
+  //   // else {
+  //   //   setDotCount(0)
+  //   //   timer.current && clearInterval(timer.current)
+  //   // }
+  //   return () => {
+  //     // Clean up on component dismount (route change)
+  //     popup.current && popup.current.close()
+  //     timer.current && clearInterval(timer.current)
+  //   }
+  // }, [authWindowIsOpen])
+
+  // useEffect(() => {
+  //   if (discordUserInfo?.token) {
+  //     toast.success('登录成功')
+  //     setAuthWindowIsOpen(false)
+  //     navigate(ADMIN_DATA_PANEL_PATH)
+  //   }
+  // }, [authWindowIsOpen, discordUserInfo])
  
   return (
     <Box
@@ -72,10 +90,10 @@ export const LoginMainPage = () => {
             <DiscordLogo />
           </SvgIcon>
         }
-        onClick={() => setAwaitDiscordAuth(true)}
+        onClick={handleDiscordLogin}
       >
         <Typography variant='h6'>
-          {awaitDiscordAuth ? `等待用户完成授权${'.'.repeat(dotCount)}` : '使用 Discord 登录'}
+          {authWindowIsOpen ? `等待用户完成授权....` : '使用 Discord 登录'}
         </Typography>
       </Button>
 

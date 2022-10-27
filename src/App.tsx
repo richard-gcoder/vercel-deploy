@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // Redux
 import { useSelector } from 'react-redux'
-import { selectLoginUserType, selectLastLoginUserType } from './store/loginUserInfoSlice'
+import { selectLoginUserType, selectLastLoginUserType, selectDiscordUserInfo } from './store/loginUserInfoSlice'
 
 // Routes
 import { Routes, Route, Navigate } from "react-router-dom";
@@ -19,8 +19,9 @@ import { AdminDataPanel, ADMIN_DATA_PANEL_PATH } from './pages/DataPanel/Admin'
 import { LoginUserType } from './store/loginUserInfoSlice'
 
 function App() {
-  const loginUserType = useSelector(selectLoginUserType)
-  const lastLoginUserType = useSelector(selectLastLoginUserType)
+  // const loginUserType = useSelector(selectLoginUserType)
+  // const lastLoginUserType = useSelector(selectLastLoginUserType)
+  const discordUserInfo = useSelector(selectDiscordUserInfo)
 
   return (
     <Box
@@ -43,12 +44,14 @@ function App() {
             : 
             <Navigate to={LOGIN_MAIN_PAGE_PATH}/> 
         }/> */}
-        <Route path={ADMIN_DATA_PANEL_PATH} element={<AdminDataPanel />}/>
+        <Route path={ADMIN_DATA_PANEL_PATH} element={
+          discordUserInfo ? <AdminDataPanel /> : <Navigate to={LOGIN_MAIN_PAGE_PATH}/> 
+        }/>
         <Route path={REGULAR_USER_DATA_PANEL_PATH} element={<RegularUserDataPanel />}/>
       </Routes>
       <ToastContainer 
         position="top-center"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -56,7 +59,7 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        // theme="colored"
+        limit={1}
       />
     </Box>
   );
