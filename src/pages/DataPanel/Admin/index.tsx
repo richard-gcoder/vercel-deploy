@@ -66,8 +66,9 @@ enum PrimaryMenuNames {
 }
 
 enum SubMenuNames {
+  PersonalHolding = '个人持有信息',
   InvestInfo = '投资信息', 
-  HoldingInfo = '持有币信息'
+  HoldingInfo = '代持币信息',
 }
 
 
@@ -113,7 +114,7 @@ export const AdminDataPanel = () => {
   const handlePrimaryMenuItemClick = (name: PrimaryMenuNames) => {
     setSelectedMenuName((prevState) => ({
       primary: prevState.primary === name ? null : name,
-      secondary: SubMenuNames.InvestInfo,
+      secondary: SubMenuNames.PersonalHolding,
       expanded: prevState.expanded === name ? null : name,
     }))
   }
@@ -174,7 +175,7 @@ export const AdminDataPanel = () => {
             {
               field: 'discord',
               headerName: 'Discord名称',
-              width: 120,
+              width: 240,
               sortable: false,
               headerAlign: 'center',
               align: 'center',
@@ -190,14 +191,6 @@ export const AdminDataPanel = () => {
             {
               field: 'email',
               headerName: 'Email',
-              width: 120,
-              sortable: false,
-              headerAlign: 'center',
-              align: 'center',
-            },
-            {
-              field: 'hcnInfo',
-              headerName: 'HCN Info',
               width: 120,
               sortable: false,
               headerAlign: 'center',
@@ -234,7 +227,6 @@ export const AdminDataPanel = () => {
               discord: info.discord,
               memberID: info.memberID,
               email: info.extend.email,
-              hcnInfo: data.hcnInfo,
               holder_discord: info.extend.holder_discord,
               holdee_discord: info.extend.holdee_discord,
               amount: info.extend.amount,
@@ -250,27 +242,15 @@ export const AdminDataPanel = () => {
           rows: data.investInfo.list,
         })
       })
-    }
-  }
-
-  const handlePersonalInfoSubMenuSelect = () => {
-    if (selectedMenuName.secondary === SubMenuNames.HoldingInfo) {
-      queryFarmMemberAccountInfoKate().then(res => {
+    } else if (selectedMenuName.secondary === SubMenuNames.PersonalHolding) {
+      queryFarmMemberAccountInfo().then(res => {
         const data = res.data.data
         setDataPanelState({
           columns: [
             {
               field: 'discord',
               headerName: 'Discord名称',
-              width: 120,
-              sortable: false,
-              headerAlign: 'center',
-              align: 'center',
-            },
-            {
-              field: 'memberID',
-              headerName: 'Member ID',
-              width: 120,
+              width: 240,
               sortable: false,
               headerAlign: 'center',
               align: 'center',
@@ -291,6 +271,49 @@ export const AdminDataPanel = () => {
               headerAlign: 'center',
               align: 'center',
             },
+          ],
+          rows: [{
+            id: data.investInfo.list[0].id,
+            discord: data.investInfo.list[0].discord,
+            email: data.investInfo.list[0].extend.email,
+            hcnInfo: data.hcnInfo,
+          }],
+        })
+      })
+    }
+  }
+
+  const handlePersonalInfoSubMenuSelect = () => {
+    if (selectedMenuName.secondary === SubMenuNames.HoldingInfo) {
+      queryFarmMemberAccountInfoKate().then(res => {
+        const data = res.data.data
+        setDataPanelState({
+          columns: [
+            {
+              field: 'discord',
+              headerName: 'Discord名称',
+              width: 240,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'memberID',
+              headerName: 'Member ID',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'email',
+              headerName: 'Email',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+
             {
               field: 'holder_discord',
               headerName: 'Holder discord',
@@ -319,10 +342,10 @@ export const AdminDataPanel = () => {
           rows: data.investInfo.list.map((info: any) => {
             return {
               id: info.id,
-              discord: info.discord,
+              // discord: info.discord,
+              discord: discordUserInfo?.discord,
               memberID: info.memberID,
               email: info.extend.email,
-              hcnInfo: data.hcnInfo,
               holder_discord: info.extend.holder_discord,
               holdee_discord: info.extend.holdee_discord,
               amount: info.extend.amount,
@@ -335,7 +358,48 @@ export const AdminDataPanel = () => {
         const data = res.data.data
         setDataPanelState({
           columns: testColumns,
-          rows: data.investInfo.list
+          rows: data.investInfo.list.map((item: Object) => {
+            return Object.assign(item, {discord: discordUserInfo?.discord,})
+          })
+        })
+      })
+    } else if (selectedMenuName.secondary === SubMenuNames.PersonalHolding) {
+      queryFarmMemberAccountInfoKate().then(res => {
+        const data = res.data.data
+        setDataPanelState({
+          columns: [
+            {
+              field: 'discord',
+              headerName: 'Discord名称',
+              width: 240,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'email',
+              headerName: 'Email',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'hcnInfo',
+              headerName: 'HCN Info',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+          ],
+          rows: [{
+            id: data.investInfo.list[0].id,
+            // discord: data.investInfo.list[0].discord,
+            discord: discordUserInfo?.discord,
+            email: data.investInfo.list[0].extend.email,
+            hcnInfo: data.hcnInfo,
+          }],
         })
       })
     }
@@ -453,7 +517,7 @@ export const AdminDataPanel = () => {
               label={'Discord'}
               variant="outlined"
               size='small'
-              value='Jim#123'
+              value={selectedMenuName.primary !== PrimaryMenuNames.QueryFarmUserInfo ? '' : 'Jim#123'}
               disabled={selectedMenuName.primary !== PrimaryMenuNames.QueryFarmUserInfo}
               sx={{
                 minWidth: '25%',
@@ -465,7 +529,7 @@ export const AdminDataPanel = () => {
               label={'Member ID'}
               variant="outlined"
               size='small'
-              value='123456'
+              value={selectedMenuName.primary !== PrimaryMenuNames.QueryFarmUserInfo ? '' : '123456'}
               disabled={selectedMenuName.primary !== PrimaryMenuNames.QueryFarmUserInfo}
               sx={{
                 minWidth: '25%',
@@ -845,6 +909,22 @@ const testColumns: GridColDef[] = [
   {
     field: 'receivedDate',
     headerName: 'Receiver Date',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'bankFrom',
+    headerName: 'From Bank',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'bankTo',
+    headerName: 'To Bank',
     width: 120,
     sortable: false,
     headerAlign: 'center',
