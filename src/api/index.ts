@@ -12,7 +12,9 @@ export const DISCORD_AUTH_URL = "https://discordapp.com/api/oauth2/authorize?res
 /** My test Discord Auth */
 // export const DISCORD_AUTH_URL = "https://discord.com/api/oauth2/authorize?client_id=1032735548055490580&redirect_uri=http%3A%2F%2Flocalhost%3A8080&response_type=code&scope=identify"
 
-const MASTER_TEST_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJKaW0iLCJleHAiOjE2NjgyNTQzNjd9.ECWLPWU3bgxKPt_Q7nOUMElpToncuRowuuNtvPChzQ8' // For testing purposes
+const MASTER_TEST_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJKaW0iLCJleHAiOjE2NjgyNTQzNjd9.ECWLPWU3bgxKPt_Q7nOUMElpToncuRowuuNtvPChzQ8' // Jim
+const MASTER_TEST_TOKEN_KATE = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJLYXRlIiwiZXhwIjoxNjk4NDE4NDk3fQ.KX5bNhzn6pTpQ4Iz_lLZhYAC1Cgr86jQA1jB_VDBY0g' // Kate
+
 
 const testRes = {
   "code": 0,
@@ -96,12 +98,27 @@ export const queryPersonalInvestment = async(token?: string) => {
 export const queryFarmMemberAccountInfo = async() => {
   return axios({
     method: 'get',
-    url: '/detail/getDetailInfoByCondition',
+    url: '/detail/getDetailInfo',
     params: {
-      // pageIndex: 1
+      discord: `Jim#123`,
+      pageIndex: 1
     },
     headers: {
       token: MASTER_TEST_TOKEN
+    },
+  })
+}
+
+export const queryFarmMemberAccountInfoKate = async() => {
+  return axios({
+    method: 'get',
+    url: '/detail/getDetailInfo',
+    params: {
+      discord: `Kate#456`,
+      pageIndex: 1
+    },
+    headers: {
+      token: MASTER_TEST_TOKEN_KATE
     },
   })
 }

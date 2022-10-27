@@ -33,7 +33,7 @@ import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { Logout, MoreVertSharp,  } from '@mui/icons-material';
 
 // API
-import { queryFarms, logout, queryAdmins, queryPersonalInvestment, queryFarmMemberAccountInfo } from '../../../api'
+import { queryFarms, logout, queryAdmins, queryPersonalInvestment, queryFarmMemberAccountInfo, queryFarmMemberAccountInfoKate } from '../../../api'
 import {  } from '../../../api/types'
 
 // Router
@@ -81,7 +81,6 @@ export const AdminDataPanel = () => {
 
   // const displayUsername = loginUserType === LoginUserType.ADMIN ? adminUserInfo?.username : loginUserType === LoginUserType.DISCORD_USER ? discordUserInfo?.discord : ''
 
-
   /** Nav menu states */
 
   const NavMenuOptions: NavMenuOption[] = [
@@ -114,7 +113,7 @@ export const AdminDataPanel = () => {
   const handlePrimaryMenuItemClick = (name: PrimaryMenuNames) => {
     setSelectedMenuName((prevState) => ({
       primary: prevState.primary === name ? null : name,
-      secondary: null,
+      secondary: SubMenuNames.InvestInfo,
       expanded: prevState.expanded === name ? null : name,
     }))
   }
@@ -165,15 +164,193 @@ export const AdminDataPanel = () => {
     // navigate('/login')
   }
 
-  // const handleFetchAllFarms = async() => {
-  //   if (adminUserInfo && adminUserInfo.token) {
-  //     const resData = await queryFarms(adminUserInfo.token).then(res => console.log(res))
-  //   }
-  // }
+  const handleQueryButton = async() => {
+    // queryFarms().then(res => console.log(res))
+    if (selectedMenuName.secondary === SubMenuNames.HoldingInfo) {
+      queryFarmMemberAccountInfo().then(res => {
+        const data = res.data.data
+        setDataPanelState({
+          columns: [
+            {
+              field: 'discord',
+              headerName: 'Discord名称',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'memberID',
+              headerName: 'Member ID',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'email',
+              headerName: 'Email',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'hcnInfo',
+              headerName: 'HCN Info',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'holder_discord',
+              headerName: 'Holder discord',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'holdee_discord',
+              headerName: 'Holdee discord',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'amount',
+              headerName: 'Amount',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+          ],
+          rows: data.investInfo.list.map((info: any) => {
+            return {
+              id: info.id,
+              discord: info.discord,
+              memberID: info.memberID,
+              email: info.extend.email,
+              hcnInfo: data.hcnInfo,
+              holder_discord: info.extend.holder_discord,
+              holdee_discord: info.extend.holdee_discord,
+              amount: info.extend.amount,
+            }
+          })
+        })
+      })
+    } else if (selectedMenuName.secondary === SubMenuNames.InvestInfo) {
+      queryFarmMemberAccountInfo().then(res => {
+        const data = res.data.data
+        setDataPanelState({
+          columns: testColumns,
+          rows: data.investInfo.list,
+        })
+      })
+    }
+  }
+
+  const handlePersonalInfoSubMenuSelect = () => {
+    if (selectedMenuName.secondary === SubMenuNames.HoldingInfo) {
+      queryFarmMemberAccountInfoKate().then(res => {
+        const data = res.data.data
+        setDataPanelState({
+          columns: [
+            {
+              field: 'discord',
+              headerName: 'Discord名称',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'memberID',
+              headerName: 'Member ID',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'email',
+              headerName: 'Email',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'hcnInfo',
+              headerName: 'HCN Info',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'holder_discord',
+              headerName: 'Holder discord',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'holdee_discord',
+              headerName: 'Holdee discord',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+            {
+              field: 'amount',
+              headerName: 'Amount',
+              width: 120,
+              sortable: false,
+              headerAlign: 'center',
+              align: 'center',
+            },
+          ],
+          rows: data.investInfo.list.map((info: any) => {
+            return {
+              id: info.id,
+              discord: info.discord,
+              memberID: info.memberID,
+              email: info.extend.email,
+              hcnInfo: data.hcnInfo,
+              holder_discord: info.extend.holder_discord,
+              holdee_discord: info.extend.holdee_discord,
+              amount: info.extend.amount,
+            }
+          })
+        })
+      })
+    } else if (selectedMenuName.secondary === SubMenuNames.InvestInfo) {
+      queryFarmMemberAccountInfoKate().then(res => {
+        const data = res.data.data
+        setDataPanelState({
+          columns: testColumns,
+          rows: data.investInfo.list
+        })
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (selectedMenuName.expanded === PrimaryMenuNames.QueryPersonalInfo) {
+      handlePersonalInfoSubMenuSelect()
+    }
+  }, [selectedMenuName])
 
   const pressTestButton = async() => {
     // queryFarms().then(res => console.log(res))
     // queryFarmMemberAccountInfo().then(res => console.log(res))
+    console.log(discordUserInfo?.token)
     // queryPersonalInfoInvestment().then((res) => console.log(res))
   }
 
@@ -182,10 +359,6 @@ export const AdminDataPanel = () => {
     matchFrom: 'start',
     stringify: (item: string) => item,
   });
-
-  // useEffect(() => {
-  //   console.log({adminUserInfo, loginUserType})
-  // }, [adminUserInfo, loginUserType])
 
   // const [loginUserType, setLoginUserType] = useState<LoginUserType>(LoginUserType.ADMIN)
   
@@ -223,7 +396,7 @@ export const AdminDataPanel = () => {
         </Button>
       </Box>
 
-      <Box sx={{ display: 'flex', width: '100%', height: '100%' }}>
+      <Box sx={{ display: 'flex', width: '100%', height: '100%', minHeight: '500px' }}>
         <Paper 
           elevation={2} 
           sx={{ 
@@ -280,13 +453,27 @@ export const AdminDataPanel = () => {
               label={'Discord'}
               variant="outlined"
               size='small'
+              value='Jim#123'
+              disabled={selectedMenuName.primary !== PrimaryMenuNames.QueryFarmUserInfo}
+              sx={{
+                minWidth: '25%',
+                margin: '14px 20px 14px 0px',
+              }}
+            />
+
+            <TextField
+              label={'Member ID'}
+              variant="outlined"
+              size='small'
+              value='123456'
+              disabled={selectedMenuName.primary !== PrimaryMenuNames.QueryFarmUserInfo}
               sx={{
                 minWidth: '25%',
                 margin: '14px 20px 14px 0px',
               }}
             />
             
-            <Autocomplete
+            {/* <Autocomplete
               disablePortal
               id="combo-box"
               options={top100Films}
@@ -295,7 +482,7 @@ export const AdminDataPanel = () => {
                 margin: '14px 20px 14px 0px',
               }}
               renderInput={(params) => <TextField {...params} label="农场" variant="outlined" size='small' />}
-            />
+            /> */}
             {/* <TextField
               label={'农场'}
               variant="outlined"
@@ -306,7 +493,11 @@ export const AdminDataPanel = () => {
               }}
             /> */}
 
-            <Button variant='contained' onClick={() => {}}>
+            <Button 
+              disabled={selectedMenuName.primary !== PrimaryMenuNames.QueryFarmUserInfo}
+              variant='contained' 
+              onClick={handleQueryButton}
+            >
               查询
             </Button>
 
@@ -318,8 +509,8 @@ export const AdminDataPanel = () => {
           <Box sx={{ }}>
             <DataGrid
               // loading={isLoading}
-              columns={columns}
-              rows={rows}
+              columns={dataPanelState.columns}
+              rows={dataPanelState.rows}
               pageSize={10}
               disableSelectionOnClick
               disableColumnMenu
@@ -342,8 +533,6 @@ export const AdminDataPanel = () => {
           </Box>
         </Box>
       </Box>
-
-
 
       <Menu
         disableAutoFocusItem
@@ -438,7 +627,7 @@ const rows = [
   { id: 17, discord: 'Clifford#1234', memberID: 'Ferrara', farmID: '3', investhcn: 44, volunteerhcn: 0, },
   { id: 18, discord: 'Frances#1234', memberID: 'Rossini', farmID: '3', investhcn: 36, volunteerhcn: 45, },
   { id: 19, discord: 'Roxie#1234', memberID: 'Harvey', farmID: '1', investhcn: 65, volunteerhcn: 0, },
-];
+]
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const top100Films = [
@@ -567,3 +756,120 @@ const top100Films = [
   { label: '3 Idiots', year: 2009 },
   { label: 'Monty Python and the Holy Grail', year: 1975 },
 ];
+
+interface InvestInfo {
+  currency: string,
+  memberId?: number,
+  accountCode: number,
+  discord: string,
+  amount: number,
+  sendDate: string,
+  receivedDate: string,
+  auditConfirmation?: string,
+  receiver: string,
+  bankFrom: string,
+  sender: string,
+  bankTo?: string,
+  id: number,
+  createTime?: string,
+  updateTime?: string,
+  remark: string,
+  extend: any
+}
+
+const testColumns: GridColDef[] = [
+  { 
+    field: 'discord',
+    headerName: 'Discord名称', 
+    width: 240,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'memberID',
+    headerName: 'Member ID',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'accountCode',
+    headerName: 'Account Code',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'amount',
+    headerName: 'Amount',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'currency',
+    headerName: 'Currency',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'sender',
+    headerName: 'Sender',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'receiver',
+    headerName: 'Receiver',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'sendDate',
+    headerName: 'Send Date',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+  {
+    field: 'receivedDate',
+    headerName: 'Receiver Date',
+    width: 120,
+    sortable: false,
+    headerAlign: 'center',
+    align: 'center',
+  },
+];
+
+const testRows = [
+  { id: 1, discord: 'Snow#1234', memberID: 'Jon', farmID: '1', investhcn: 35, volunteerhcn: 100, },
+  { id: 2, discord: 'Lannister#1234', memberID: 'Cersei', farmID: '1', investhcn: 42, volunteerhcn: 23, },
+  { id: 3, discord: 'Brock#1234', memberID: 'Jaime', farmID: '2', investhcn: 45, volunteerhcn: 41, },
+  { id: 4, discord: 'Stark#1234', memberID: 'Arya', farmID: '1', investhcn: 16, volunteerhcn: 55, },
+  { id: 5, discord: 'Targaryen#1234', memberID: 'Daenerys', farmID: '2', investhcn: 11, volunteerhcn: 235, },
+  { id: 6, discord: 'Melisandre#1234', memberID: 'Kaylin', farmID: '2', investhcn: 150, volunteerhcn: 12, },
+  { id: 7, discord: 'Clifford#1234', memberID: 'Ferrara', farmID: '3', investhcn: 44, volunteerhcn: 0, },
+  { id: 8, discord: 'Frances#1234', memberID: 'Rossini', farmID: '3', investhcn: 36, volunteerhcn: 45, },
+  { id: 9, discord: 'Roxie#1234', memberID: 'Harvey', farmID: '1', investhcn: 65, volunteerhcn: 0, },
+  { id: 10, discord: 'Snow#1234', memberID: 'Jon', farmID: '1', investhcn: 35, volunteerhcn: 100, },
+  { id: 11, discord: 'Lannister#1234', memberID: 'Cersei', farmID: '1', investhcn: 42, volunteerhcn: 23, },
+  { id: 12, discord: 'Richard#12', memberID: 'Li', farmID: '2', investhcn: 45, volunteerhcn: 41, },
+  { id: 13, discord: 'Brock#1234', memberID: 'Jaime', farmID: '2', investhcn: 45, volunteerhcn: 41, },
+  { id: 14, discord: 'Stark#1234', memberID: 'Arya', farmID: '1', investhcn: 16, volunteerhcn: 55, },
+  { id: 15, discord: 'Targaryen#1234', memberID: 'Daenerys', farmID: '2', investhcn: 11, volunteerhcn: 235, },
+  { id: 16, discord: 'Melisandre#1234', memberID: 'Kaylin', farmID: '2', investhcn: 150, volunteerhcn: 12, },
+  { id: 17, discord: 'Clifford#1234', memberID: 'Ferrara', farmID: '3', investhcn: 44, volunteerhcn: 0, },
+  { id: 18, discord: 'Frances#1234', memberID: 'Rossini', farmID: '3', investhcn: 36, volunteerhcn: 45, },
+  { id: 19, discord: 'Roxie#1234', memberID: 'Harvey', farmID: '1', investhcn: 65, volunteerhcn: 0, },
+]

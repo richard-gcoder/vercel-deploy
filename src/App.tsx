@@ -44,9 +44,10 @@ function App() {
             : 
             <Navigate to={LOGIN_MAIN_PAGE_PATH}/> 
         }/> */}
-        <Route path={ADMIN_DATA_PANEL_PATH} element={
+        <Route path={ADMIN_DATA_PANEL_PATH} element={<AdminDataPanel />}/>
+        {/* <Route path={ADMIN_DATA_PANEL_PATH} element={
           discordUserInfo ? <AdminDataPanel /> : <Navigate to={LOGIN_MAIN_PAGE_PATH}/> 
-        }/>
+        }/> */}
         <Route path={REGULAR_USER_DATA_PANEL_PATH} element={<RegularUserDataPanel />}/>
       </Routes>
       <ToastContainer 
