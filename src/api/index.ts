@@ -4,10 +4,10 @@ import { toast } from 'react-toastify';
 import { LoginUserType } from '../store/loginUserInfoSlice'
 import { PersonalInvestmentResponse } from './types'
 
-export const REQUEST_URL_BASE = 'http://recon.lovefuture99.com:8081'
+export const REQUEST_URL_BASE = 'http://recon.lovefuture99.com:3000'
 
-/** Actual Discord Auth */
-export const DISCORD_AUTH_URL = "https://discordapp.com/api/oauth2/authorize?response_type=code&client_id=1024123696123740250 &scope=identify email&state=discord&redirect_uri=http://recon.lovefuture99.com:3000/user/discordLogin"
+/** Actual Discord Auth */                                                                                      
+export const DISCORD_AUTH_URL = "https://discordapp.com/api/oauth2/authorize?response_type=code&client_id=1024123696123740250&scope=identify email&state=discord&redirect_uri=http://recon.lovefuture99.com:3000/user/discordLogin"
 
 /** My test Discord Auth */
 // export const DISCORD_AUTH_URL = "https://discord.com/api/oauth2/authorize?client_id=1032735548055490580&redirect_uri=http%3A%2F%2Flocalhost%3A8080&response_type=code&scope=identify"
