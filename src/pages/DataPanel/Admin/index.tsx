@@ -159,10 +159,10 @@ export const AdminDataPanel = () => {
     //   dispatch(setAdminLogout())
     // }
     toast.success("已登出")
+    dispatch(setDiscordUserLogout())
     setTimeout(() => {
-      dispatch(setDiscordUserLogout())
+      navigate('/login')
     }, 1000)
-    // navigate('/login')
   }
 
   const handleQueryButton = async() => {
